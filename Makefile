@@ -16,6 +16,9 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Axolotl
 Axolotl_FILES = Tweak.xm
-Axolotl_CFLAGS = -fobjc-arc -std=c++11 -Wno-deprecated-declarations
+Axolotl_CFLAGS = -fobjc-arc -std=c++11
 
 include $(THEOS)/makefiles/tweak.mk
+
+SUBPROJECTS += Preferences
+include $(THEOS_MAKE_PATH)/aggregate.mk
