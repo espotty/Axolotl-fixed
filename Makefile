@@ -3,11 +3,11 @@ DEBUG = 0
 FINALPACKAGE = 1
 
 ifeq ($(ROOTLESS),1)
-TARGET := iphone:clang:16.5:14.0
+TARGET := iphone:clang:latest:14.0
 ARCHS = arm64 arm64e
 $(TWEAK_NAME)_BUNDLE_IDENTIFIER = com.macthemes.axolotl~rootless
 else
-TARGET := iphone:clang:14.5:11.4
+TARGET := iphone:clang:latest:11.0
 ARCHS = arm64 arm64e
 $(TWEAK_NAME)_BUNDLE_IDENTIFIER = com.macthemes.axolotl
 endif
