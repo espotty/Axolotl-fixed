@@ -39,14 +39,11 @@ static NSString * (*_orig_WABuildHash)();
 // Must be hooked via MSHookFunction (not GOT rebinding) because
 // WAMessageGetUsecaseMessageSecret calls it as a direct internal call
 // within SharedModules, bypassing the GOT entirely.
-static void (*_orig_WAHandleFailureInFunction)(const char *, const char *, const char *, ...);
-static void _new_WAHandleFailureInFunction(const char *func, const char *file, const char *reason, ...)
+// No logging here — the real signature is unknown and args may be NULL.
+static void (*_orig_WAHandleFailureInFunction)();
+static void _new_WAHandleFailureInFunction()
 {
-	if (debugLogging)
-	{
-		NSLog(@"WAHandleFailureInFunction suppressed — func: %s reason: %s", func, reason);
-	}
-	// no-op: prevent abort()
+	// pure no-op: prevent abort()
 }
 
 /*
