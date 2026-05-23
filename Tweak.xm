@@ -46,6 +46,14 @@ static void _new_WAHandleFailureInFunction()
 	// pure no-op: prevent abort()
 }
 
+// Future-proofing: intercept any new failure functions WhatsApp may add.
+// __assert_rtn is a C assert crash path that WhatsApp may call directly.
+static void (*_orig_WAAssertionFailure)();
+static void _new_WAAssertionFailure()
+{
+	// pure no-op
+}
+
 /*
 	Functions …
 */
@@ -319,6 +327,15 @@ static NSDate *_new_WADeprecatedPlatformCutOffDate()
 			else if (debugLogging)
 			{
 				NSLog(@"Failed to find WAHandleFailureInFunction");
+			}
+
+			// Hook WAAssertionFailure as a defensive catch-all for future versions.
+
+			void *_WAAssertionFailurePtr = dlsym(image, "WAAssertionFailure");
+
+			if (_WAAssertionFailurePtr)
+			{
+				MSHookFunction(_WAAssertionFailurePtr, (void *)&_new_WAAssertionFailure, (void **)&_orig_WAAssertionFailure);
 			}
 
 			// Get Build Date and change it to our new Date …
