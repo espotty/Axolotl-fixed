@@ -15,9 +15,10 @@ FINALPACKAGE = 1
 
 include $(THEOS)/makefiles/common.mk
 
-$(BUNDLE_NAME)_CFLAGS = -fobjc-arc
+$(BUNDLE_NAME)_CFLAGS = -fobjc-arc -fno-modules
 $(BUNDLE_NAME)_FILES = $(wildcard *.m)
 $(BUNDLE_NAME)_FRAMEWORKS = UIKit
+$(BUNDLE_NAME)_LDFLAGS = -Wl,-undefined,dynamic_lookup
 $(BUNDLE_NAME)_INSTALL_PATH = /Library/PreferenceBundles
 
 include $(THEOS_MAKE_PATH)/bundle.mk
