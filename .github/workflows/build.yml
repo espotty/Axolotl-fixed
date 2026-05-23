@@ -5,6 +5,9 @@ on:
     branches: [master]
   workflow_dispatch:
 
+env:
+  THEOS: ${{ github.workspace }}/theos
+
 jobs:
   build:
     runs-on: macos-latest
@@ -12,19 +15,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache Theos
+        uses: actions/cache@v4
+        id: theos-cache
+        with:
+          path: ${{ github.workspace }}/theos
+          key: ${{ runner.os }}-theos-${{ hashFiles('Makefile') }}
+
       - name: Install Theos
+        if: steps.theos-cache.outputs.cache-hit != 'true'
         run: |
-          export THEOS=~/theos
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          set -e
+          git clone --recursive https://github.com/theos/theos.git $THEOS
+          curl -sSL https://github.com/theos/sdks/releases/download/2024-09-02/iPhoneOS16.5.sdk.tar.xz \
+            | tar -xJf - -C $THEOS/sdks/
 
-      - name: Build DEB
-        run: |
-          export THEOS=~/theos
-          export PATH=$THEOS/bin:$PATH
-          make package FINALPACKAGE=1
+      - name: Build DEB (Rootful)
+        run: make package FINALPACKAGE=1
 
-      - name: Upload DEB
+      - name: Build DEB (Rootless)
+        run: make package FINALPACKAGE=1 ROOTLESS=1
+
+      - name: Upload DEBs
         uses: actions/upload-artifact@v4
         with:
-          name: Axolotl-fixed.deb
+          name: Axolotl-fixed-debs
           path: packages/*.deb
