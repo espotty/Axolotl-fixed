@@ -7,7 +7,7 @@
 
 #include <CydiaSubstrate/CydiaSubstrate.h>
 
-#define DEFAULT_VERSION @"26.30.77.0";
+#define DEFAULT_VERSION @"26.30.78.0";
 
 /*
 	Preferences …
